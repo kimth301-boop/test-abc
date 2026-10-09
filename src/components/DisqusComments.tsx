@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { MessageSquare, Settings, Sparkles, RefreshCw } from 'lucide-react';
-
-interface DisqusCommentsProps {
-  defaultShortname?: string;
-}
+import React, { useEffect } from 'react';
+import { MessageSquare, Sparkles } from 'lucide-react';
 
 declare global {
   interface Window {
@@ -14,66 +10,40 @@ declare global {
   }
 }
 
-export const DisqusComments: React.FC<DisqusCommentsProps> = ({
-  defaultShortname = 'lotto645-golden',
-}) => {
-  const [shortname, setShortname] = useState<string>(() => {
-    try {
-      return localStorage.getItem('disqus_shortname') || defaultShortname;
-    } catch {
-      return defaultShortname;
-    }
-  });
-
-  const [isEditingShortname, setIsEditingShortname] = useState(false);
-  const [tempShortname, setTempShortname] = useState(shortname);
+export const DisqusComments: React.FC = () => {
+  const shortname = 'test-abc-e2h';
 
   useEffect(() => {
-    // Inject or reset Disqus embed script
-    const loadDisqus = () => {
-      window.disqus_config = function (this: any) {
-        this.page.url = window.location.href;
-        this.page.identifier = 'lotto-645-golden-board';
-        this.language = 'ko';
-      };
-
-      if (window.DISQUS) {
-        window.DISQUS.reset({
-          reload: true,
-          config: function (this: any) {
-            this.page.url = window.location.href;
-            this.page.identifier = 'lotto-645-golden-board';
-            this.language = 'ko';
-          },
-        });
-      } else {
-        const d = document;
-        const existingScript = document.getElementById('disqus-embed-script');
-        if (existingScript) existingScript.remove();
-
-        const s = d.createElement('script');
-        s.id = 'disqus-embed-script';
-        s.src = `https://${shortname}.disqus.com/embed.js`;
-        s.setAttribute('data-timestamp', String(+new Date()));
-        (d.head || d.body).appendChild(s);
-      }
+    // Set Disqus configuration variables
+    window.disqus_config = function (this: any) {
+      this.page.url = 'https://test-abc-e2h.pages.dev/';
+      this.page.identifier = 'test-abc-e2h-lotto-main';
+      this.language = 'ko';
     };
 
-    loadDisqus();
-  }, [shortname]);
+    if (window.DISQUS) {
+      // Reload DISQUS if already initialized
+      window.DISQUS.reset({
+        reload: true,
+        config: function (this: any) {
+          this.page.url = 'https://test-abc-e2h.pages.dev/';
+          this.page.identifier = 'test-abc-e2h-lotto-main';
+          this.language = 'ko';
+        },
+      });
+    } else {
+      // Load Disqus script
+      const existingScript = document.getElementById('disqus-embed-script');
+      if (existingScript) existingScript.remove();
 
-  const handleSaveShortname = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!tempShortname.trim()) return;
-    const clean = tempShortname.trim().toLowerCase();
-    setShortname(clean);
-    try {
-      localStorage.setItem('disqus_shortname', clean);
-    } catch {
-      // ignore
+      const d = document;
+      const s = d.createElement('script');
+      s.id = 'disqus-embed-script';
+      s.src = `https://${shortname}.disqus.com/embed.js`;
+      s.setAttribute('data-timestamp', String(+new Date()));
+      (d.head || d.body).appendChild(s);
     }
-    setIsEditingShortname(false);
-  };
+  }, []);
 
   return (
     <section className="w-full max-w-4xl mx-auto my-10 px-2 sm:px-0">
@@ -94,56 +64,14 @@ export const DisqusComments: React.FC<DisqusCommentsProps> = ({
             </p>
           </div>
 
-          <div className="flex items-center gap-2 self-end sm:self-auto">
-            <button
-              onClick={() => setIsEditingShortname(!isEditingShortname)}
-              className="text-[11px] text-slate-400 hover:text-amber-400 bg-slate-800 hover:bg-slate-700/80 px-2.5 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1 transition cursor-pointer"
-              title="Disqus Shortname 설정"
-            >
-              <Settings className="w-3.5 h-3.5" />
-              <span>숏네임 변경</span>
-            </button>
+          <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2.5 py-1 rounded-full self-start sm:self-auto font-medium">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Disqus 실시간 연동됨</span>
           </div>
         </div>
 
-        {/* Shortname editor (Optional for owner) */}
-        {isEditingShortname && (
-          <form
-            onSubmit={handleSaveShortname}
-            className="my-4 p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs flex flex-col sm:flex-row items-center gap-3 animate-fade-in"
-          >
-            <div className="flex-1 w-full">
-              <label className="text-slate-300 font-semibold block mb-1">
-                Disqus 사이트 Shortname (현재: <span className="text-amber-400 font-mono">{shortname}</span>)
-              </label>
-              <input
-                type="text"
-                value={tempShortname}
-                onChange={(e) => setTempShortname(e.target.value)}
-                placeholder="예: lotto645-golden 또는 본인의 Disqus shortname"
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white outline-hidden focus:border-amber-400"
-              />
-            </div>
-            <div className="flex items-center gap-2 self-end sm:self-auto mt-2 sm:mt-5">
-              <button
-                type="submit"
-                className="px-3.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-lg transition cursor-pointer"
-              >
-                적용
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsEditingShortname(false)}
-                className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition cursor-pointer"
-              >
-                취소
-              </button>
-            </div>
-          </form>
-        )}
-
         {/* Disqus Embed Container */}
-        <div className="mt-6 min-h-[220px]">
+        <div className="mt-6 min-h-[260px]">
           <div id="disqus_thread" className="w-full" />
           <noscript>
             <p className="text-xs text-slate-400 text-center py-6">

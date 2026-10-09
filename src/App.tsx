@@ -276,7 +276,7 @@ export default function App() {
         )}
 
         {/* Disqus Comment Section */}
-        <DisqusComments defaultShortname="lotto645-golden" />
+        <DisqusComments />
       </main>
 
       {/* Saved Numbers Drawer Modal */}
