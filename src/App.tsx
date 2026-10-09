@@ -12,6 +12,7 @@ import {
   Award,
   ShieldCheck,
   Share2,
+  Mail,
 } from 'lucide-react';
 import { MachineDrawer } from './components/MachineDrawer';
 import { SlipGenerator } from './components/SlipGenerator';
@@ -20,6 +21,7 @@ import { FortuneDreamPicker } from './components/FortuneDreamPicker';
 import { StatsAnalyzer } from './components/StatsAnalyzer';
 import { WinningSimulator } from './components/WinningSimulator';
 import { SavedNumbersDrawer } from './components/SavedNumbersDrawer';
+import { PartnershipModal } from './components/PartnershipModal';
 import { LottoGame } from './types/lotto';
 import { soundManager } from './utils/audio';
 
@@ -29,6 +31,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('machine');
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isSavedDrawerOpen, setIsSavedDrawerOpen] = useState<boolean>(false);
+  const [isPartnershipOpen, setIsPartnershipOpen] = useState<boolean>(false);
   const [savedGames, setSavedGames] = useState<LottoGame[]>(() => {
     try {
       const stored = localStorage.getItem('lotto_saved_games');
@@ -174,6 +177,18 @@ export default function App() {
 
           {/* Right Header Controls */}
           <div className="flex items-center gap-2">
+            {/* Partnership Inquiry Button */}
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setIsPartnershipOpen(true);
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition cursor-pointer"
+            >
+              <Mail className="w-4 h-4 text-amber-400" />
+              <span>제휴문의</span>
+            </button>
+
             {/* Audio Toggle */}
             <button
               onClick={handleToggleMute}
@@ -269,6 +284,12 @@ export default function App() {
         onClearAll={handleClearAllSaved}
       />
 
+      {/* Business Partnership Inquiry Modal */}
+      <PartnershipModal
+        isOpen={isPartnershipOpen}
+        onClose={() => setIsPartnershipOpen(false)}
+      />
+
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-900 bg-slate-950 py-8 px-4 sm:px-6 text-center text-xs text-slate-500">
         <div className="max-w-4xl mx-auto space-y-3">
@@ -281,6 +302,16 @@ export default function App() {
             <span>만 19세 이상 이용 가능</span>
             <span>•</span>
             <span>1등 당첨확률: 1 / 8,145,060</span>
+            <span>•</span>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setIsPartnershipOpen(true);
+              }}
+              className="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-4 transition cursor-pointer"
+            >
+              광고 및 제휴문의
+            </button>
           </div>
 
           <p className="text-[11px] text-slate-600 leading-relaxed">
