@@ -1,0 +1,6 @@
+{
+  "name": "로또 6/45 황금 행운 번호 추첨기",
+  "description": "실감나는 볼 추첨 애니메이션, 맞춤형 필터(고정수/제외수), 5게임 연속 생성, 역대 번호 통계 분석 및 모의 당첨 시뮬레이터를 제공하는 로또 6/45 번호 추첨 서비스입니다.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,82 @@
+import React from 'react';
+import { getBallColor } from '../utils/lottoGenerator';
+
+interface LottoBallProps {
+  num: number;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  isBonus?: boolean;
+  isMatched?: boolean;
+  className?: string;
+  animate?: boolean;
+}
+
+export const LottoBall: React.FC<LottoBallProps> = ({
+  num,
+  size = 'md',
+  isBonus = false,
+  isMatched,
+  className = '',
+  animate = false,
+}) => {
+  const color = getBallColor(num);
+
+  const sizeClasses = {
+    sm: 'w-7 h-7 text-xs font-bold',
+    md: 'w-10 h-10 text-sm font-extrabold',
+    lg: 'w-12 h-12 text-base font-extrabold sm:w-14 sm:h-14 sm:text-lg',
+    xl: 'w-16 h-16 text-xl font-black sm:w-20 sm:h-20 sm:text-2xl',
+  }[size];
+
+  // Colors mapping for 3D sphere gradient
+  let gradientStyle = 'from-amber-300 via-amber-400 to-amber-600';
+  let innerShadow = 'shadow-[inset_0_-4px_6px_rgba(0,0,0,0.3),inset_0_3px_5px_rgba(255,255,255,0.7)]';
+  let textColor = 'text-amber-950';
+
+  if (num <= 10) {
+    gradientStyle = 'from-amber-200 via-amber-400 to-amber-600';
+    textColor = 'text-amber-950';
+  } else if (num <= 20) {
+    gradientStyle = 'from-sky-300 via-blue-500 to-blue-700';
+    textColor = 'text-white';
+  } else if (num <= 30) {
+    gradientStyle = 'from-rose-300 via-rose-500 to-rose-700';
+    textColor = 'text-white';
+  } else if (num <= 40) {
+    gradientStyle = 'from-slate-300 via-slate-500 to-slate-700';
+    textColor = 'text-white';
+  } else {
+    gradientStyle = 'from-emerald-300 via-emerald-500 to-emerald-700';
+    textColor = 'text-white';
+  }
+
+  return (
+    <div className={`relative inline-flex flex-col items-center justify-center select-none ${className}`}>
+      <div
+        className={`
+          relative flex items-center justify-center rounded-full bg-gradient-to-b ${gradientStyle}
+          ${textColor} ${sizeClasses} ${innerShadow}
+          shadow-lg shadow-black/40 transition-transform duration-300
+          ${animate ? 'animate-bounce' : ''}
+          ${isMatched === true ? 'ring-3 ring-amber-300 ring-offset-2 ring-offset-slate-900 scale-105' : ''}
+          ${isMatched === false ? 'opacity-40 grayscale-[0.3]' : ''}
+        `}
+      >
+        {/* Top-left specular gloss highlight */}
+        <span
+          className="absolute top-1 left-1.5 w-1/3 h-1/3 rounded-full bg-white/70 blur-[0.6px] pointer-events-none"
+          style={{ clipPath: 'ellipse(50% 40% at 50% 50%)' }}
+        />
+        {/* Subtle center ring highlight on Korean official lottery balls */}
+        <span className="relative z-10 tracking-tight font-black drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]">
+          {num}
+        </span>
+      </div>
+
+      {isBonus && (
+        <span className="absolute -bottom-4 text-[10px] font-bold text-amber-400 bg-amber-950/80 px-1 rounded border border-amber-500/40">
+          보너스
+        </span>
+      )}
+    </div>
+  );
+};
