@@ -22,6 +22,7 @@ import { StatsAnalyzer } from './components/StatsAnalyzer';
 import { WinningSimulator } from './components/WinningSimulator';
 import { SavedNumbersDrawer } from './components/SavedNumbersDrawer';
 import { PartnershipModal } from './components/PartnershipModal';
+import { DisqusComments } from './components/DisqusComments';
 import { LottoGame } from './types/lotto';
 import { soundManager } from './utils/audio';
 
@@ -273,6 +274,9 @@ export default function App() {
         {activeTab === 'simulator' && (
           <WinningSimulator savedGames={savedGames} />
         )}
+
+        {/* Disqus Comment Section */}
+        <DisqusComments defaultShortname="lotto645-golden" />
       </main>
 
       {/* Saved Numbers Drawer Modal */}
